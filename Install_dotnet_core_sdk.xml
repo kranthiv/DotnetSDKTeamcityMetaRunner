@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<meta-runner name="Dotnet sdk installer">
+  <description>Install dotnet sdk</description>
+  <settings>
+    <parameters>
+      <param name="CLIDirectory" value="&quot;%env.ProgramFiles%\dotnet&quot;" spec="text description='Dotnet sdk installation directory' label='Installation directory' validationMode='not_empty' display='normal'" />
+      <param name="Channel" value="" spec="select display='normal' description='Dotnet core sdk release channel' label='Release channel' data_2='Current' data_1='LTS' data_4='3.1' data_3='2.1'" />
+      <param name="Version" value="" spec="text display='normal' description='Dotnet sdk version' label='Dotnet sdk version' validationMode='not_empty'" />
+    </parameters>
+    <build-runners>
+      <runner name="Download dotnet-install script" type="jetbrains_powershell">
+        <parameters>
+          <param name="jetbrains_powershell_execution" value="PS1" />
+          <param name="jetbrains_powershell_noprofile" value="true" />
+          <param name="jetbrains_powershell_script_code" value="Invoke-WebRequest 'https://dot.net/v1/dotnet-install.ps1' -OutFile 'dotnet-install.ps1'" />
+          <param name="jetbrains_powershell_script_mode" value="CODE" />
+          <param name="teamcity.step.mode" value="default" />
+        </parameters>
+      </runner>
+      <runner name="Install dotnet cli" type="jetbrains_powershell">
+        <parameters>
+          <param name="jetbrains_powershell_execution" value="PS1" />
+          <param name="jetbrains_powershell_noprofile" value="true" />
+          <param name="jetbrains_powershell_scriptArguments" value="-Channel %Channel% -Version %Version% -InstallDir &quot;%env.ProgramFiles%\dotnet&quot;" />
+          <param name="jetbrains_powershell_script_file" value="dotnet-install.ps1" />
+          <param name="jetbrains_powershell_script_mode" value="FILE" />
+          <param name="teamcity.step.mode" value="default" />
+        </parameters>
+      </runner>
+    </build-runners>
+    <requirements />
+  </settings>
+</meta-runner>
